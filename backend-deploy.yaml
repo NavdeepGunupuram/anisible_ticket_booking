@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-bb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend-bb
+  template:
+    metadata:
+      labels:
+        app: backend-bb
+    spec:
+      containers:
+        - name: backend-bb
+          image: navdeep650/backend_ticket
+          ports:
+            - containerPort: 8808
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:mysql://mysql-bb-service:3306/ticket?allowPublicKeyRetrieval=true&useSSL=false"
+            - name: SPRING_DATASOURCE_USERNAME
+              value: "root"
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: "Navdeep@9999"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-bb-service
+spec:
+  type: NodePort
+  selector:
+    app: backend-bb
+  ports:
+    - name: http
+      port: 8808
+      targetPort: 8808
+      nodePort: 32284
